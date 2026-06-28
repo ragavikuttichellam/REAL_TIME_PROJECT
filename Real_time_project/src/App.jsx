@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
-import InterviewSession from './InterviewSession';
 import Login from './Login';
+import App2 from './Prepaiupgraded';
 import './index.css';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // ✅ Check token on load — if token exists, skip login
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return !!localStorage.getItem('prepai-token');
+  });
+
+  const [user, setUser] = useState(null);
+
+  const handleLogin = ({ user: userData, token }) => {
+    setUser(userData);
+    setIsLoggedIn(true);
+  };
+
+  // ✅ If logged in, show Prepaiupgraded (not old InterviewSession)
+  if (isLoggedIn) {
+    return <App2 />;
+  }
 
   return (
     <div className="App">
-      {isLoggedIn ? (
-        <InterviewSession />
-      ) : (
-        <Login onLogin={() => setIsLoggedIn(true)} />
-      )}
+      <Login onLogin={handleLogin} />
     </div>
   );
 }
